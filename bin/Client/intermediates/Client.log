@@ -1,0 +1,13 @@
+﻿  Widgets.cpp
+C:\Users\egorc\Desktop\Messenger\Client\include\Widgets.h(238,30): warning C4305: инициализация: усечение из "double" в "const float"
+  (компиляция исходного файла "src/Widgets.cpp")
+  
+C:\Users\egorc\Desktop\Messenger\Client\src\Widgets.cpp(22,19): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+C:\Users\egorc\Desktop\Messenger\Client\src\Widgets.cpp(121,9): warning C4267: return: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\egorc\Desktop\Messenger\Client\src\Widgets.cpp(594,28): warning C4305: инициализация: усечение из "double" в "const float"
+C:\Users\egorc\Desktop\Messenger\Client\src\Widgets.cpp(617,38): warning C4244: аргумент: преобразование "size_t" в "float", возможна потеря данных
+C:\Users\egorc\Desktop\Messenger\Client\src\Widgets.cpp(617,15): warning C4244: аргумент: преобразование "size_t" в "float", возможна потеря данных
+C:\Users\egorc\Desktop\Messenger\Client\src\Widgets.cpp(618,51): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+  Client.vcxproj -> C:\Users\egorc\Desktop\Messenger\bin\Client\Debug\Client.exe
+  "pwsh.exe" не является внутренней или внешней
+  командой, исполняемой программой или пакетным файлом.

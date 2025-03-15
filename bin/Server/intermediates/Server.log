@@ -1,0 +1,14 @@
+﻿  Main.cpp
+  Server.cpp
+C:\Users\egorc\Desktop\Messenger\Server\src\Server.cpp(168,91): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\egorc\Desktop\Messenger\Server\src\Server.cpp(231,79): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\egorc\Desktop\Messenger\Server\src\Server.cpp(235,77): warning C4244: аргумент: преобразование "std::streamsize" в "int", возможна потеря данных
+C:\Users\egorc\Desktop\Messenger\Server\src\Server.cpp(284,65): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+  Создание кода
+  0 of 675 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  Server.vcxproj -> C:\Users\egorc\Desktop\Messenger\bin\Server\Release\Server.exe
+  "pwsh.exe" не является внутренней или внешней
+  командой, исполняемой программой или пакетным файлом.
