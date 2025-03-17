@@ -222,20 +222,23 @@ void Server::handleClient(SOCKET clientSocket, std::string ip, int port)
                 }
 
                 file.close();
-                std::cout << "[+] File saved to " << savePath << " (" << bytesReceived << " bytes)" << std::endl;
+                std::cout << GREEN << "[+] File saved to " << savePath << " (" << bytesReceived << " bytes)" << RESET << std::endl;
+
+                std::string send_message = "[File] {" + ip + ":" + std::to_string(port)
+                    + " - " + clientName + "} " + "<" + fileSizeStr + "> (" + fileName + ")";
 
                 {
                     std::lock_guard<std::mutex> lock(clientMutex);
                     for (const auto& client : clients) {
                         if (client->ip == targetIp && client->port == targetPort) {
-                            send(client->socket, message.c_str(), message.size(), 0);
+                            send(client->socket, send_message.c_str(), send_message.size(), 0);
 
                             std::ifstream sendFile(savePath, std::ios::binary);
                             while (sendFile.read(buffer, sizeof(buffer)) || sendFile.gcount() > 0) {
                                 send(client->socket, buffer, sendFile.gcount(), 0);
                             }
                             sendFile.close();
-                            std::cout << "[+] File successfully relayed to client" << std::endl;
+                            std::cout << GREEN << "[+] File successfully relayed to client" << RESET << std::endl;
                             break;
                         }
                     }

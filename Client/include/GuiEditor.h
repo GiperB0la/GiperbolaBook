@@ -57,13 +57,13 @@ private:
 	sf::Texture WindowFrameHelloTexture, HelloFrameTexture;
 	sf::Sprite WindowFrameHelloSprite, HelloFrameSprite;
 	sf::Texture WindowFrameMaximumTexture, StartChatFrameMaximumTexture, ChatFrameMaximumTexture, UsersFrameMaximumTexture, 
-		UserFrameTopMaximumTexture, UserFrameLowerMaximumTexture, DragAndDropMaximumTexture;
+		UserFrameTopMaximumTexture, UserFrameLowerMaximumTexture, DragAndDropMaximumTexture, NoSignalMaximumTexture;
 	sf::Sprite WindowFrameMaximumSprite, StartChatFrameMaximumSprite, ChatFrameMaximumSprite, UsersFrameMaximumSprite, 
-		UserFrameTopMaximumSprite, UserFrameLowerMaximumSprite, DragAndDropMaximumSprite;
+		UserFrameTopMaximumSprite, UserFrameLowerMaximumSprite, DragAndDropMaximumSprite, NoSignalMaximumSprite;
 	sf::Texture WindowFrameMinimalTexture, StartChatFrameMinimalTexture, ChatFrameMinimalTexture, UsersFrameMinimalTexture, 
-		UserFrameTopMinimalTexture, UserFrameLowerMinimalTexture, DragAndDropMinimalTexture;
+		UserFrameTopMinimalTexture, UserFrameLowerMinimalTexture, DragAndDropMinimalTexture, NoSignalMinimalTexture;
 	sf::Sprite WindowFrameMinimalSprite, StartChatFrameMinimalSprite, ChatFrameMinimalSprite, UsersFrameMinimalSprite, 
-		UserFrameTopMinimalSprite, UserFrameLowerMinimalSprite, DragAndDropMinimalSprite;
+		UserFrameTopMinimalSprite, UserFrameLowerMinimalSprite, DragAndDropMinimalSprite, NoSignalMinimalSprite;
 
 private:
 	std::vector<Button> buttonsWindowPanel;

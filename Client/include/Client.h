@@ -70,4 +70,5 @@ private:
     bool updateUsers = false;
     ClientEntry* currentChooseUser;
     GuiEditor* guiEditor = nullptr;
+    bool noSignal = false;
 };

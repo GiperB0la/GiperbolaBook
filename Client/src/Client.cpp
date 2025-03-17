@@ -108,7 +108,15 @@ bool Client::connectToServer()
 
     sendName();
 
+    running = true;
     std::cout << GREEN << "[+] Connected to server" << RESET << std::endl;
+
+    if (!guiEditor->chats.empty()) {
+        guiEditor->chats[0]->client_name = name;
+        guiEditor->chats[0]->client_ip = clientIp;
+        guiEditor->chats[0]->client_port = clientPort;
+    }
+
     return true;
 }
 
@@ -118,17 +126,23 @@ void Client::start()
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    while (running) {
+    while (true) {
         if (!connectToServer()) {
+            noSignal = true;
             std::cout << RED << "[-] Connection failed. Retrying in 3 seconds..." << RESET << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(3));
             continue;
         }
 
+        noSignal = false;
         receiveThread = std::thread(&Client::receiveMessage, this);
 
         while (running) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+
+        if (receiveThread.joinable()) {
+            receiveThread.join();
         }
     }
 }
@@ -229,7 +243,6 @@ void Client::receiveMessage()
         if (bytesReceived > 0) {
             buffer[bytesReceived] = '\0';
             std::string message = buffer;
-            // std::cout << "[Server]: " << message << std::endl;
 
             if (message.rfind("[Clients]", 0) == 0) {
                 updateClientList(message);
@@ -410,6 +423,11 @@ void Client::chooseUser(const std::string name, const std::string ip, int port)
             currentChooseUser = &client;
         }
     }
+
+    if (currentChooseUser == nullptr) {
+        return;
+    }
+
     std::wcout << YELLOW << "[Choose] {" << utf8_to_wstring(currentChooseUser->ip) << ":" << currentChooseUser->port 
         << " - " << utf8_to_wstring(currentChooseUser->name) << "}" << RESET << std::endl;
 }

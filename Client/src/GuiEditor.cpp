@@ -62,6 +62,7 @@ void GuiEditor::init()
 	UserFrameTopMaximumTexture.loadFromFile("Graphics\\Frames\\Maximum\\UserFrameTop.png");
 	UserFrameLowerMaximumTexture.loadFromFile("Graphics\\Frames\\Maximum\\UserFrameLower.png");
 	DragAndDropMaximumTexture.loadFromFile("Graphics\\Frames\\Maximum\\DragAndDrop.png");
+	NoSignalMaximumTexture.loadFromFile("Graphics\\Frames\\Maximum\\NoSignal.png");
 
 	WindowFrameMinimalTexture.loadFromFile("Graphics\\Frames\\Minimal\\Window.png");
 	StartChatFrameMinimalTexture.loadFromFile("Graphics\\Frames\\Minimal\\StartChatFrame.png");
@@ -70,6 +71,7 @@ void GuiEditor::init()
 	UserFrameTopMinimalTexture.loadFromFile("Graphics\\Frames\\Minimal\\UserFrameTop.png");
 	UserFrameLowerMinimalTexture.loadFromFile("Graphics\\Frames\\Minimal\\UserFrameLower.png");
 	DragAndDropMinimalTexture.loadFromFile("Graphics\\Frames\\Minimal\\DragAndDrop.png");
+	NoSignalMinimalTexture.loadFromFile("Graphics\\Frames\\Minimal\\NoSignal.png");
 
 	EmblemSprite.setTexture(EmblemTexture);
 
@@ -83,6 +85,7 @@ void GuiEditor::init()
 	UserFrameTopMaximumSprite.setTexture(UserFrameTopMaximumTexture);
 	UserFrameLowerMaximumSprite.setTexture(UserFrameLowerMaximumTexture);
 	DragAndDropMaximumSprite.setTexture(DragAndDropMaximumTexture);
+	NoSignalMaximumSprite.setTexture(NoSignalMaximumTexture);
 
 	WindowFrameMinimalSprite.setTexture(WindowFrameMinimalTexture);
 	StartChatFrameMinimalSprite.setTexture(StartChatFrameMinimalTexture);
@@ -91,6 +94,7 @@ void GuiEditor::init()
 	UserFrameTopMinimalSprite.setTexture(UserFrameTopMinimalTexture);
 	UserFrameLowerMinimalSprite.setTexture(UserFrameLowerMinimalTexture);
 	DragAndDropMinimalSprite.setTexture(DragAndDropMinimalTexture);
+	NoSignalMinimalSprite.setTexture(NoSignalMinimalTexture);
 
 	EmblemSprite.setPosition(sf::Vector2f(15.f, 0.f));
 
@@ -104,6 +108,7 @@ void GuiEditor::init()
 	UserFrameTopMaximumSprite.setPosition(sf::Vector2f(285.f, 43.f));
 	UserFrameLowerMaximumSprite.setPosition(sf::Vector2f(285.f, 939.f));
 	DragAndDropMaximumSprite.setPosition(sf::Vector2f(279.f, 41.f));
+	NoSignalMaximumSprite.setPosition(sf::Vector2f(279.f, 41.f));
 
 	WindowFrameMinimalSprite.setPosition(sf::Vector2f(0.f, 0.f));
 	StartChatFrameMinimalSprite.setPosition(sf::Vector2f(275.f, 41.f));
@@ -112,6 +117,7 @@ void GuiEditor::init()
 	UserFrameTopMinimalSprite.setPosition(sf::Vector2f(281.f, 43.f));
 	UserFrameLowerMinimalSprite.setPosition(sf::Vector2f(281.f, 701.f));
 	DragAndDropMinimalSprite.setPosition(sf::Vector2f(275.f, 41.f));
+	NoSignalMinimalSprite.setPosition(sf::Vector2f(275.f, 41.f));
 
 	nameUser.setFont(font);
 	nameUser.setFillColor(sf::Color::White);
@@ -285,7 +291,7 @@ void GuiEditor::processEvents()
 		}
 
 		for (auto& button : buttons) {
-			if (isStart) {
+			if (isStart || client->noSignal) {
 				if (button.getCategory() == static_cast<int>(CategoryButton::Send)) {
 					continue;
 				}
@@ -316,25 +322,23 @@ void GuiEditor::processEvents()
 				// CloseUser
 				if (button.getCategory() == static_cast<int>(CategoryButton::CloseUser)) {
 					client->currentChooseUser = nullptr;
-					for (auto& usersFramesButton : usersFramesButtons) {
-						usersFramesButton->resetSelection();
+					for (auto& usersFrame : usersFrames) {
+						usersFrame.radioButton->resetSelection();
 					}
 				}
 				// Clip
 				if (button.getCategory() == static_cast<int>(CategoryButton::Clip)) {
 					auto selectedFile = openFileDialog();
 					if (selectedFile.has_value()) {
-						std::wcout << L"Выбран файл: " << selectedFile.value().wstring() << std::endl;
 						client->sendFile(pathsDragAndDrop, selectedFile.value().string());
 					}
 					else {
-						std::wcout << L"Файл не был выбран." << std::endl;
 					}
 				}
 			}
 		}
 
-		if (!isStart) {
+		if (!isStart && !client->noSignal) {
 			if (isMaximum) {
 				inputFieldMaximumMain.handleEvent(event, window);
 				if (inputFieldMaximumMain.isSubmitted()) {
@@ -351,23 +355,29 @@ void GuiEditor::processEvents()
 			}
 		}
 
-		for (auto& userFrames : usersFrames) {
-			if (userFrames.radioButton->isSelected()) {
-				if (isMaximum) {
-					userFrames.chat->handleEvent(event, ChatFrameMaximumSprite, subChatMaximal, window);
-				}
-				else {
-					userFrames.chat->handleEvent(event, ChatFrameMinimalSprite, subChatMinimal, window);
+		if (!client->noSignal) {
+			for (auto& userFrames : usersFrames) {
+				if (userFrames.radioButton->isSelected()) {
+					if (isMaximum) {
+						userFrames.chat->handleEvent(event, ChatFrameMaximumSprite, subChatMaximal, window);
+					}
+					else {
+						userFrames.chat->handleEvent(event, ChatFrameMinimalSprite, subChatMinimal, window);
+					}
 				}
 			}
 		}
 	}
 
-	for (auto& userFrames : usersFrames) {
-		userFrames.radioButton->handleEvent(event, window);
-		if (userFrames.radioButton->clicking()) {
-			client->chooseUser(userFrames.chat->client_name, userFrames.chat->client_ip, userFrames.chat->client_port);
-			nameUser.setString(utf8_to_wstring(client->currentChooseUser->name));
+	if (!client->noSignal) {
+		for (auto& userFrames : usersFrames) {
+			userFrames.radioButton->handleEvent(event, window);
+			if (userFrames.radioButton->clicking()) {
+				client->chooseUser(userFrames.chat->client_name, userFrames.chat->client_ip, userFrames.chat->client_port);
+				if (client->currentChooseUser != nullptr) {
+					nameUser.setString(utf8_to_wstring(client->currentChooseUser->name));
+				}
+			}
 		}
 	}
 }
@@ -379,8 +389,11 @@ void GuiEditor::render()
 	if (isMaximum) {
 		window.draw(WindowFrameMaximumSprite);
 		window.draw(UsersFrameMaximumSprite);
-		if (!isStart) {
+		if (!isStart && !client->noSignal) {
 			window.draw(ChatFrameMaximumSprite);
+		}
+		else if (client->noSignal) {
+			window.draw(NoSignalMaximumSprite);
 		}
 		else {
 			window.draw(StartChatFrameMaximumSprite);
@@ -389,15 +402,18 @@ void GuiEditor::render()
 	else {
 		window.draw(WindowFrameMinimalSprite);
 		window.draw(UsersFrameMinimalSprite);
-		if (!isStart) {
+		if (!isStart && !client->noSignal) {
 			window.draw(ChatFrameMinimalSprite);
+		}
+		else if (client->noSignal) {
+			window.draw(NoSignalMinimalSprite);
 		}
 		else {
 			window.draw(StartChatFrameMinimalSprite);
 		}
 	}
 
-	if (!isStart) {
+	if (!isStart && !client->noSignal) {
 		for (auto& userFrames : usersFrames) {
 			if (userFrames.radioButton->isSelected()) {
 				if (isMaximum) {
@@ -411,13 +427,13 @@ void GuiEditor::render()
 	}
 
 	if (isMaximum) {
-		if (!isStart) {
+		if (!isStart && !client->noSignal) {
 			window.draw(UserFrameTopMaximumSprite);
 			window.draw(UserFrameLowerMaximumSprite);
 		}
 	}
 	else {
-		if (!isStart) {
+		if (!isStart && !client->noSignal) {
 			window.draw(UserFrameTopMinimalSprite);
 			window.draw(UserFrameLowerMinimalSprite);
 		}
@@ -425,7 +441,7 @@ void GuiEditor::render()
 
 	// window.draw(EmblemSprite);
 
-	if (!isStart) {
+	if (!isStart && !client->noSignal) {
 		if (isMaximum) {
 			inputFieldMaximumMain.render(window);
 		}
@@ -434,7 +450,7 @@ void GuiEditor::render()
 		}
 	}
 
-	if (!isStart) {
+	if (!isStart && !client->noSignal) {
 		window.draw(nameUser);
 	}
 
@@ -443,7 +459,7 @@ void GuiEditor::render()
 	}
 
 	for (auto& button : buttons) {
-		if (isStart) {
+		if (isStart || client->noSignal) {
 			if (button.getCategory() == static_cast<int>(CategoryButton::Send) ||
 				button.getCategory() == static_cast<int>(CategoryButton::CloseUser) ||
 				button.getCategory() == static_cast<int>(CategoryButton::Clip)) {
@@ -602,6 +618,28 @@ void GuiEditor::runMainWindow()
 			button.setPosition(sf::Vector2f(1844.0f, 966.0f));
 		}
 	}
+
+	auto* newButton = new RadioButton(
+		usersFramesButtons,
+		static_cast<size_t>(CategoryButton::User),
+		sf::Vector2f(25.0f, 109.0f),
+		"Graphics\\Buttons\\Users\\UserFrameNormal.png",
+		"Graphics\\Buttons\\Users\\UserFrameHovered.png",
+		"Graphics\\Buttons\\Users\\UserFramePressed.png",
+		L"Ты (" + utf8_to_wstring(client->name) + L")",
+		font,
+		14,
+		sf::Color::White,
+		sf::Color::White,
+		sf::Color::White,
+		sf::Vector2f(24.f, 10.f)
+	);
+
+	std::shared_ptr<Chat> chatPtr = std::make_shared<Chat>(client->name, client->clientIp, client->clientPort, subChatMaximal, font, window);
+
+	usersFramesButtons.emplace_back(newButton);
+	chats.push_back(chatPtr);
+	usersFrames.emplace_back(newButton, chatPtr.get());
 }
 
 void GuiEditor::renderHello()
@@ -746,100 +784,58 @@ void GuiEditor::updateUsersFrames()
 		const float spacing = 14.0f;
 		const float frameHeight = 36.0f;
 
-		static std::vector<ClientEntry> previousUsers;
 		const auto& newUsers = client->clients;
 		client->updateUsers = false;
 
-		for (auto it = previousUsers.begin(); it != previousUsers.end();) {
-			auto found = std::find_if(newUsers.begin(), newUsers.end(), [&](const ClientEntry& user) {
-				return user.ip == it->ip && user.port == it->port;
+		for (auto it = chats.begin(); it != chats.end(); ) {
+			auto chat = *it;
+			auto userIt = std::find_if(newUsers.begin(), newUsers.end(),
+				[&](const auto& user) {
+					return chat->client_ip == user.ip && chat->client_port == user.port;
 				});
 
-			if (found == newUsers.end()) {
-				auto frameIt = std::find_if(usersFrames.begin(), usersFrames.end(), [&](const User& frame) {
-					return frame.chat->client_ip == it->ip && frame.chat->client_port == it->port;
+			if (userIt == newUsers.end()) {
+				auto buttonIt = std::find_if(usersFrames.begin(), usersFrames.end(),
+					[&](const auto& frame) {
+						return frame.chat == chat.get();
 					});
-				if (frameIt != usersFrames.end()) {
-					delete frameIt->radioButton;
-					usersFrames.erase(frameIt);
+
+				if (buttonIt != usersFrames.end()) {
+					usersFramesButtons.erase(std::remove(usersFramesButtons.begin(), usersFramesButtons.end(), buttonIt->radioButton), usersFramesButtons.end());
+					usersFrames.erase(buttonIt);
 				}
 
-				auto chatIt = std::find_if(chats.begin(), chats.end(), [&](const std::shared_ptr<Chat>& chat) {
-					return chat->client_ip == it->ip && chat->client_port == it->port;
-					});
-				if (chatIt != chats.end()) {
-					chats.erase(chatIt);
-				}
-
-				it = previousUsers.erase(it);
+				it = chats.erase(it);
 			}
 			else {
 				++it;
 			}
 		}
 
-		std::vector<ClientEntry> sortedUsers;
-		ClientEntry* selfUser = nullptr;
-
-		for (const auto& user : newUsers) {
-			if (client->name == user.name && client->clientIp == user.ip && client->clientPort == user.port) {
-				selfUser = new ClientEntry(user);
+		size_t i = 1;
+		for (const auto& newUser : newUsers) {
+			if (newUser.ip == client->clientIp && newUser.port == client->clientPort) {
+				continue;
 			}
-			else {
-				sortedUsers.push_back(user);
-			}
-		}
 
-		if (selfUser) {
-			sortedUsers.insert(sortedUsers.begin(), *selfUser);
-			delete selfUser;
-		}
-
-		for (size_t i = 0; i < sortedUsers.size(); ++i) {
-			bool userExists = std::any_of(usersFrames.begin(), usersFrames.end(), [&](const User& frame) {
-				return frame.radioButton->getText() == utf8_to_wstring(sortedUsers[i].name);
+			bool exists = std::any_of(chats.begin(), chats.end(), [&](const std::shared_ptr<Chat>& chat) {
+				return newUser.ip == chat->client_ip && newUser.port == chat->client_port;
 				});
 
-			if (!userExists) {
-				std::wstring client_name;
-				const size_t maxNameLength = 21;
-				client_name = utf8_to_wstring(sortedUsers[i].name);
-				if (client_name.length() > maxNameLength) {
-					client_name = client_name.substr(0, maxNameLength) + L"...";
-				}
+			if (!exists) {
+				auto chatPtr = std::make_shared<Chat>(
+					newUser.name, newUser.ip, newUser.port,
+					isMaximum ? subChatMaximal : subChatMinimal, font, window);
+				chats.push_back(chatPtr);
 
-				if (i == 0) {
-					client_name = L"Ты (" + client_name + L")";
-				}
-
-				float yPos = startY + i * (frameHeight + spacing);
-
-				auto chatIt = std::find_if(chats.begin(), chats.end(), [&](const std::shared_ptr<Chat>& chat) {
-					return chat->client_ip == sortedUsers[i].ip && chat->client_port == sortedUsers[i].port;
-					});
-
-				std::shared_ptr<Chat> chatPtr;
-				if (chatIt == chats.end()) {
-					if (isMaximum) {
-						chatPtr = std::make_shared<Chat>(sortedUsers[i].name, sortedUsers[i].ip, sortedUsers[i].port, subChatMaximal, font, window);
-					}
-					else {
-						chatPtr = std::make_shared<Chat>(sortedUsers[i].name, sortedUsers[i].ip, sortedUsers[i].port, subChatMinimal, font, window);
-					}
-					chats.push_back(chatPtr);
-				}
-				else {
-					chatPtr = *chatIt;
-				}
-
-				auto* newButton = new RadioButton(
+				RadioButton* newButton = new RadioButton(
 					usersFramesButtons,
 					static_cast<size_t>(CategoryButton::User),
-					sf::Vector2f(startX, yPos),
+					sf::Vector2f(startX, startY + i++ * (frameHeight + spacing)),
 					"Graphics\\Buttons\\Users\\UserFrameNormal.png",
 					"Graphics\\Buttons\\Users\\UserFrameHovered.png",
 					"Graphics\\Buttons\\Users\\UserFramePressed.png",
-					client_name,
+					utf8_to_wstring(newUser.name),
 					font,
 					14,
 					sf::Color::White,
@@ -852,8 +848,6 @@ void GuiEditor::updateUsersFrames()
 				usersFrames.emplace_back(newButton, chatPtr.get());
 			}
 		}
-
-		previousUsers = newUsers;
 	}
 }
 
