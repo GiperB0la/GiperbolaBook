@@ -7,7 +7,9 @@ ClientApp::ClientApp(const std::string& ip, unsigned short port)
 
 ClientApp::~ClientApp()
 {
+    client.isStopping = true;
     client.stop();
+    client.running = true;
     if (clientThread.joinable()) {
         clientThread.join();
     }

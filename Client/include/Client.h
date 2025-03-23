@@ -33,11 +33,13 @@ struct ClientEntry
 struct sockaddr_in;
 
 class GuiEditor;
+class ClientApp;
 
 class Client
 {
 public:
     friend GuiEditor;
+    friend ClientApp;
 
 public:
     Client(const std::string& ip, int port);
@@ -71,4 +73,5 @@ private:
     ClientEntry* currentChooseUser;
     GuiEditor* guiEditor = nullptr;
     bool noSignal = false;
+    std::atomic<bool> isStopping = false;
 };

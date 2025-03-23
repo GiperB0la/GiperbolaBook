@@ -56,13 +56,13 @@ Client::~Client()
 void Client::stop()
 {
     running = false;
-    // delete serverAddr;
+    delete serverAddr;
 
-    /*if (clientSocket != INVALID_SOCKET) {
+    if (clientSocket != INVALID_SOCKET) {
         shutdown(clientSocket, SD_BOTH);
         closesocket(clientSocket);
         clientSocket = INVALID_SOCKET;
-    }*/
+    }
 
     WSACleanup();
 
@@ -122,12 +122,16 @@ bool Client::connectToServer()
 
 void Client::start()
 {
+    std::cout << std::this_thread::get_id() << std::endl;
     while (!running) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    while (true) {
+    while (!isStopping) {
         if (!connectToServer()) {
+            if (isStopping) {
+                return;
+            }
             noSignal = true;
             std::cout << RED << "[-] Connection failed. Retrying in 3 seconds..." << RESET << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(3));

@@ -1,8 +1,7 @@
-﻿  Main.cpp
-  Создание кода
-  Previous IPDB and IOBJ mismatch, fall back to full compilation.
-  All 677 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+﻿  Создание кода
+  Previous IPDB was built with incompatible compiler, fall back to full compilation.
+  All 681 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Создание кода завершено
-  Server.vcxproj -> C:\Users\egorc\Desktop\Messenger\bin\Server\Release\Server.exe
+  Server.vcxproj -> D:\cpp\Projects\Messenger\bin\Server\Release\Server.exe
   "pwsh.exe" не является внутренней или внешней
   командой, исполняемой программой или пакетным файлом.

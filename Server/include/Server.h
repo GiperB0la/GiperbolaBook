@@ -42,6 +42,8 @@ class Server
 public:
     Server(const std::string& ip, int port);
     ~Server();
+
+public:
     void start();
 
 private:

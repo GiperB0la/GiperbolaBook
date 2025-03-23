@@ -197,7 +197,7 @@ void Server::handleClient(SOCKET clientSocket, std::string ip, int port)
 
                 std::string fileName = message.substr(fileNameStart + 1, fileNameEnd - fileNameStart - 1);
 
-                std::string folderPath = folderFiles + targetIp + std::to_string(targetPort);
+                std::string folderPath = folderFiles + targetIp + " " + std::to_string(targetPort);
                 if (!std::filesystem::exists(folderPath)) {
                     std::error_code ec;
                     if (!std::filesystem::create_directories(folderPath, ec)) {
