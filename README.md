@@ -28,5 +28,5 @@ If no arguments are provided, the default values will be used:
 reg 127.0.0.1:5555
 ```
 
-## 📚 Resources
+## 📸 Screenshot
 <picture> <source media="(prefers-color-scheme: dark)" srcset="https://github.com/GiperB0la/GiperbolaBook/blob/main/Screen.png"> <source media="(prefers-color-scheme: light)" srcset="YOUR-LIGHTMODE-IMAGE"> <img alt="Screen" src="Screen.png"> </picture>
