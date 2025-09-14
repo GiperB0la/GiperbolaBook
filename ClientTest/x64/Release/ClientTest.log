@@ -1,0 +1,4 @@
+﻿  ClientTest.cpp
+D:\Cpp\vcpkg\installed\x64-windows\include\gtest\internal\gtest-port.h(273,1): error C1189: #error:  C++ versions less than C++17 are not supported.
+  (compiling source file 'ClientTest.cpp')
+  

@@ -1,0 +1,15 @@
+﻿  ClientTest.cpp
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(30,17): warning C4251: 'NetLib::ip_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
+  (compiling source file 'ClientTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+  Generating code
+  2 of 262 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  ClientTest.vcxproj -> C:\Users\Egorc\Desktop\GiperbolaBook\bin\ClientTest\Release\ClientTest.exe
+  "pwsh.exe" не является внутренней или внешней
+  командой, исполняемой программой или пакетным файлом.
+  ╤ъюяшЁютрэю Їрщыют: 0.

@@ -1,0 +1,23 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "ServerTest\\ServerTest.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Server\\Server.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ClientTest\\ClientTest.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "GiperbolaBook\\GiperbolaBook.vcxproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
