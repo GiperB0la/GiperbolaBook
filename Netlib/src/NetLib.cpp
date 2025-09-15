@@ -1,8 +1,8 @@
 #include "../include/NetLib.hpp"
 
 
-NetLib::NetLib(const std::string& ip, uint16_t port)
-    : ip_(ip), port_(port), sock_(INVALID_SOCKET) {
+NetLib::NetLib(const std::string& ip, uint16_t port, const std::string& nickname_)
+    : ip_(ip), port_(port), sock_(INVALID_SOCKET), nickname_(nickname_) {
 }
 
 NetLib::~NetLib()
@@ -11,6 +11,27 @@ NetLib::~NetLib()
         closesocket(sock_);
     }
     WSACleanup();
+}
+
+bool NetLib::init()
+{
+    if (!connectToServer()) return false;
+
+    if (!isReadyToWrite()) {
+        std::cerr << "Timeout waiting for connect" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+void NetLib::run()
+{
+    while (true) {
+        if (isReadyToRead()) {
+            receiveMessage();
+        }
+    }
 }
 
 bool NetLib::connectToServer()
@@ -46,6 +67,23 @@ bool NetLib::connectToServer()
     }
 
     std::cout << "Connecting (non-blocking)..." << std::endl;
+
+    if (!isReadyToWrite(2000)) {
+        std::cerr << "Timeout waiting for connect" << std::endl;
+        return false;
+    }
+
+    Message msg;
+    msg.length = static_cast<uint32_t>(nickname_.size());
+    msg.type = MessageType::SetNickname;
+    msg.payload.assign(nickname_.begin(), nickname_.end());
+
+    auto buffer = msg.serialize();
+    if (!sendMessage(std::string(buffer.begin(), buffer.end()))) {
+        std::cerr << "Failed to send nickname" << std::endl;
+        return false;
+    }
+
     return true;
 }
 
@@ -89,14 +127,48 @@ bool NetLib::sendMessage(const std::string& msg)
     return true;
 }
 
-std::string NetLib::receiveMessage()
+void NetLib::receiveMessage()
 {
-    if (!isReadyToRead()) return {};
+    if (!isReadyToRead()) return;
 
     char buffer[1024];
     int res = recv(sock_, buffer, sizeof(buffer), 0);
     if (res > 0) {
-        return std::string(buffer, res);
+        try {
+            Message msg = Message::deserialize(buffer, res);
+
+            switch (msg.type) {
+            case MessageType::UserJoined: {
+                std::string data = msg.asString(); // например "127.0.0.1:12345"
+                Client c;
+                c.ip_ = data.substr(0, data.find(':'));
+                c.port_ = static_cast<uint16_t>(std::stoi(data.substr(data.find(':') + 1)));
+                c.nickname_ = ""; // пока пусто, позже можно передавать сразу ник
+                clients_.push_back(c);
+                std::cout << ">>> User joined: " << data << std::endl;
+                break;
+            }
+            case MessageType::UserLeft: {
+                std::string data = msg.asString();
+                clients_.erase(
+                    std::remove_if(clients_.begin(), clients_.end(),
+                        [&](const Client& cl) { return cl.ip_ + ":" + std::to_string(cl.port_) == data; }),
+                    clients_.end());
+                std::cout << ">>> User left: " << data << std::endl;
+                break;
+            }
+            case MessageType::TextMessage:
+                std::cout << msg.asString() << std::endl;
+                break;
+
+            default:
+                std::cerr << "Unknown message type: " << (int)msg.type << std::endl;
+                break;
+            }
+        }
+        catch (const std::exception& ex) {
+            std::cerr << "Failed to parse message: " << ex.what() << std::endl;
+        }
     }
     else if (res == 0) {
         std::cerr << "Server closed connection" << std::endl;
@@ -107,5 +179,4 @@ std::string NetLib::receiveMessage()
             std::cerr << "recv() failed: " << err << std::endl;
         }
     }
-    return {};
 }

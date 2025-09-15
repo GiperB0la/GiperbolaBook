@@ -111,10 +111,12 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\Egorc\Desktop\GiperbolaBook\GiperbolaBook\SFML-2.6.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Egorc\Desktop\GiperbolaBook\GiperbolaBook\SFML-2.6.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /D "$(SolutionDir)bin\NetLib\$(Configuration)\NetLib.dll" "$(OutDir)"</Command>
@@ -129,10 +131,12 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\Egorc\Desktop\GiperbolaBook\GiperbolaBook\SFML-2.6.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Egorc\Desktop\GiperbolaBook\GiperbolaBook\SFML-2.6.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /D "$(SolutionDir)bin\NetLib\$(Configuration)\NetLib.dll" "$(OutDir)"</Command>
@@ -140,11 +144,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="src\ClientUI.cpp" />
+    <ClCompile Include="src\Widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Netlib\Netlib.vcxproj">
       <Project>{4690c113-3313-4afd-9b18-eaf4fc5b4e28}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ClientUI.hpp" />
+    <ClInclude Include="include\Widgets.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

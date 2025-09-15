@@ -22,6 +22,7 @@
     <ClCompile Include="src\ServerLib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Protocol.hpp" />
     <ClInclude Include="include\ServerLib.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

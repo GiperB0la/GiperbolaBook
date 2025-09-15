@@ -23,19 +23,41 @@ void ClientSession::postRecv()
 
 void ClientSession::handleRecv(OverlappedEx* ov, DWORD bytes)
 {
-    std::string msg(ov->buffer, bytes);
-    std::cerr << "Client [" << ip_ << ":" << port_ << "] " << msg << std::endl;
-    delete ov;
+    try {
+        Message msg = Message::deserialize(ov->buffer, bytes);
 
-    send("Echo: " + msg);
-    postRecv();
+        switch (msg.type) {
+        case MessageType::SetNickname:
+            nickname_ = msg.asString();
+            std::cout << "Client [" << ip_ << ":" << port_ << "] set nickname: " << nickname_ << std::endl;
+            break;
+
+        case MessageType::TextMessage:
+            // std::cout << "[" << nickname_ << "] " << msg.asString() << std::endl;
+            // эхо обратно клиенту
+            // send(Message::makeText("Echo: " + msg.asString()).serialize());
+            break;
+
+        default:
+            std::cerr << "Unknown message type" << std::endl;
+            break;
+        }
+    }
+    catch (const std::exception& ex) {
+        std::cerr << "Failed to parse message: " << ex.what() << std::endl;
+    }
+
+    delete ov;
+    postRecv(); // слушаем дальше
 }
 
-void ClientSession::send(const std::string& data)
+void ClientSession::send(const Message& msg)
 {
+    auto buffer = msg.serialize();
+
     auto* ov = new OverlappedEx(OperationType::Send);
-    memcpy(ov->buffer, data.c_str(), data.size());
-    ov->wsaBuf.len = static_cast<ULONG>(data.size());
+    memcpy(ov->buffer, buffer.data(), buffer.size());
+    ov->wsaBuf.len = static_cast<ULONG>(buffer.size());
 
     DWORD bytes = 0;
     int res = WSASend(socket_, &ov->wsaBuf, 1, &bytes, 0, &ov->overlapped, nullptr);
@@ -134,6 +156,20 @@ void ServerLib::acceptLoop()
         {
             std::lock_guard<std::mutex> lock(sessions_mutex_);
             sessions_.push_back(session);
+        }
+
+        Message joinedMsg = Message::makeMessage(
+            session->getIP() + ":" + std::to_string(session->getPort()),
+            MessageType::UserJoined
+        );
+
+        {
+            std::lock_guard<std::mutex> lock(sessions_mutex_);
+            for (auto& s : sessions_) {
+                if (s.get() != session.get()) {
+                    s->send(joinedMsg);
+                }
+            }
         }
     }
 }

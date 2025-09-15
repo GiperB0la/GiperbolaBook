@@ -15,6 +15,8 @@
 #include <vector>
 #include <memory>
 #include <mutex>
+#include <string>
+#include "Protocol.hpp"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -50,7 +52,7 @@ public:
     SOCKET getSocket() const;
     void postRecv();
     void handleRecv(OverlappedEx* ov, DWORD bytes);
-    void send(const std::string& data);
+    void send(const Message& msg);
     std::string getIP() const;
     uint16_t getPort() const;
 
@@ -58,12 +60,15 @@ private:
     std::string ip_;
     uint16_t port_;
     SOCKET socket_;
+    std::string nickname_;
 };
 
 class SERVER_LIB ServerLib
 {
 public:
     ServerLib(std::string ip, uint16_t port);
+
+public:
     void shutdown();
 
 public:

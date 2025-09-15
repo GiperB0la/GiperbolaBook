@@ -1,32 +1,28 @@
+#include "include/ClientUI.hpp"
 #include <NetLib.hpp>
+#include <iostream>
+#include <thread>
 
 
 int main()
 {
-    NetLib client("127.0.0.1", 8888);
-    if (!client.connectToServer()) return 1;
-
-    if (!client.isReadyToWrite()) {
-        std::cerr << "Timeout waiting for connect" << std::endl;
+    NetLib client("127.0.0.1", 8888, "Egor");
+    if (!client.init()) {
+        std::cerr << "Client init failed" << std::endl;
         return 1;
     }
 
-    std::cout << "Connected!" << std::endl;
-
-    while (true) {
-        std::string msg;
-        std::cout << "Enter message (or 'exit'): ";
-        std::getline(std::cin, msg);
-
-        if (msg == "exit") break;
-
-        client.sendMessage(msg);
-
-        std::string reply = client.receiveMessage();
-        if (!reply.empty()) {
-            std::cout << "Server replied: " << reply << std::endl;
-        }
+    ClientUI client_ui;
+    if (!client_ui.init()) {
+        std::cerr << "Client UI init failed" << std::endl;
+        return 1;
     }
+
+    std::thread thread_net(&NetLib::run, &client);
+
+    client_ui.run();
+
+    thread_net.detach();
 
     return 0;
 }
