@@ -34,7 +34,6 @@ void ClientSession::handleRecv(OverlappedEx* ov, DWORD bytes)
 
         case MessageType::TextMessage:
             // std::cout << "[" << nickname_ << "] " << msg.asString() << std::endl;
-            // эхо обратно клиенту
             // send(Message::makeText("Echo: " + msg.asString()).serialize());
             break;
 
@@ -48,7 +47,7 @@ void ClientSession::handleRecv(OverlappedEx* ov, DWORD bytes)
     }
 
     delete ov;
-    postRecv(); // слушаем дальше
+    postRecv();
 }
 
 void ClientSession::send(const Message& msg)
