@@ -139,11 +139,11 @@ void NetLib::receiveMessage()
 
             switch (msg.type) {
             case MessageType::UserJoined: {
-                std::string data = msg.asString(); // например "127.0.0.1:12345"
+                std::string data = msg.asString();
                 Client c;
                 c.ip_ = data.substr(0, data.find(':'));
                 c.port_ = static_cast<uint16_t>(std::stoi(data.substr(data.find(':') + 1)));
-                c.nickname_ = ""; // пока пусто, позже можно передавать сразу ник
+                c.nickname_ = "";
                 clients_.push_back(c);
                 std::cout << ">>> User joined: " << data << std::endl;
                 break;
