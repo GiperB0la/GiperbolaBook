@@ -1,44 +1,40 @@
 ﻿  ClientTest.cpp
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(43,17): warning C4251: 'NetLib::ip_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
-  (compiling source file '../ClientTest/ClientTest.cpp')
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(52,17): warning C4251: 'NetLib::ip_server_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
+  (compiling source file 'ClientTest.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(46,17): warning C4251: 'NetLib::nickname_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
-  (compiling source file '../ClientTest/ClientTest.cpp')
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(52,29): warning C4251: 'NetLib::ip_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
+  (compiling source file 'ClientTest.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(47,25): warning C4251: 'NetLib::clients_': 'std::vector<Client,std::allocator<Client>>' needs to have dll-interface to be used by clients of 'NetLib'
-  (compiling source file '../ClientTest/ClientTest.cpp')
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(55,17): warning C4251: 'NetLib::nickname_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
+  (compiling source file 'ClientTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(56,25): warning C4251: 'NetLib::clients_': 'std::vector<Client,std::allocator<Client>>' needs to have dll-interface to be used by clients of 'NetLib'
+  (compiling source file 'ClientTest.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       see declaration of 'std::vector<Client,std::allocator<Client>>'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\ClientTest\ClientTest.cpp(44,5): error C2248: 'NetLib::connectToServer': cannot access private member declared in class 'NetLib'
-      C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(36,10):
-      see declaration of 'NetLib::connectToServer'
-      C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(25,15):
-      see declaration of 'NetLib'
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(57,16): warning C4251: 'NetLib::events_mtx_': 'std::mutex' needs to have dll-interface to be used by clients of 'NetLib'
+  (compiling source file 'ClientTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\mutex(98,19):
+      see declaration of 'std::mutex'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\ClientTest\ClientTest.cpp(46,5): error C2248: 'NetLib::isReadyToWrite': cannot access private member declared in class 'NetLib'
-      C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(37,10):
-      see declaration of 'NetLib::isReadyToWrite'
-      C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(25,15):
-      see declaration of 'NetLib'
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(58,24): warning C4251: 'NetLib::events_': 'std::queue<Packet,std::deque<Packet,std::allocator<Packet>>>' needs to have dll-interface to be used by clients of 'NetLib'
+  (compiling source file 'ClientTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\queue(34,7):
+      see declaration of 'std::queue<Packet,std::deque<Packet,std::allocator<Packet>>>'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\ClientTest\ClientTest.cpp(48,5): error C2248: 'NetLib::sendMessage': cannot access private member declared in class 'NetLib'
-      C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(39,10):
-      see declaration of 'NetLib::sendMessage'
-      C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(25,15):
-      see declaration of 'NetLib'
-  
-C:\Users\Egorc\Desktop\GiperbolaBook\ClientTest\ClientTest.cpp(50,32): error C2248: 'NetLib::receiveMessage': cannot access private member declared in class 'NetLib'
-      C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(40,10):
-      see declaration of 'NetLib::receiveMessage'
-      C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(25,15):
-      see declaration of 'NetLib'
-  
-C:\Users\Egorc\Desktop\GiperbolaBook\ClientTest\ClientTest.cpp(50,23): error C2440: 'initializing': cannot convert from 'void' to 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
-      C:\Users\Egorc\Desktop\GiperbolaBook\ClientTest\ClientTest.cpp(50,23):
-      Expressions of type void cannot be converted to other types
-  
+  Generating code
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  All 201 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  ClientTest.vcxproj -> C:\Users\Egorc\Desktop\GiperbolaBook\bin\ClientTest\Release\ClientTest.exe
+  "pwsh.exe" не является внутренней или внешней
+  командой, исполняемой программой или пакетным файлом.
+  C:\Users\Egorc\Desktop\GiperbolaBook\bin\NetLib\Release\NetLib.dll
+  ╤ъюяшЁютрэю Їрщыют: 1.

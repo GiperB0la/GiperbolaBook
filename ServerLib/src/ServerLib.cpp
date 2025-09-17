@@ -1,8 +1,8 @@
 #include "../include/ServerLib.hpp"
 
 
-ClientSession::ClientSession(SOCKET socket, const std::string& ip, uint16_t port)
-    : socket_(socket), ip_(ip), port_(port) {
+ClientSession::ClientSession(SOCKET socket, const std::string& ip, uint16_t port, ServerLib& server)
+    : socket_(socket), ip_(ip), port_(port), server_(server) {
 }
 
 SOCKET ClientSession::getSocket() const
@@ -24,22 +24,68 @@ void ClientSession::postRecv()
 void ClientSession::handleRecv(OverlappedEx* ov, DWORD bytes)
 {
     try {
-        Message msg = Message::deserialize(ov->buffer, bytes);
+        Packet packet = Packet::deserialize(ov->buffer, bytes);
 
-        switch (msg.type) {
-        case MessageType::SetNickname:
-            nickname_ = msg.asString();
+        if (packet.type_ == PacketType::SetNickname) {
+            nickname_ = packet.asString();
             std::cout << "Client [" << ip_ << ":" << port_ << "] set nickname: " << nickname_ << std::endl;
-            break;
+            {
+                std::lock_guard<std::mutex> lock(server_.sessions_mutex_);
+                std::ostringstream oss;
+                for (auto& s : server_.sessions_) {
+                    oss << s->getIP() << ":" << s->getPort() << ":" << s->getNickName() << "\n";
+                }
+                Packet usersListMsg = Packet::make(oss.str(), PacketType::CurrentUsers);
+                send(usersListMsg);
 
-        case MessageType::TextMessage:
-            // std::cout << "[" << nickname_ << "] " << msg.asString() << std::endl;
-            // send(Message::makeText("Echo: " + msg.asString()).serialize());
-            break;
+                Packet joinedMsg = Packet::make(
+                    getIP() + ":" + std::to_string(getPort()) + ":" + getNickName(),
+                    PacketType::UserJoined
+                );
+                for (auto& s : server_.sessions_) {
+                    if (s.get() != this) {
+                        s->send(joinedMsg);
+                    }
+                }
+            }
+        }
 
-        default:
-            std::cerr << "Unknown message type" << std::endl;
-            break;
+        else if (packet.type_ == PacketType::Message) {
+            try {
+                Message msg = Message::deserialize(packet.payload_.data(), packet.payload_.size());
+
+                std::cout
+                    << "[" << msg.ip_from << ":" << msg.port_from << "] "
+                    << " -> [" << msg.ip_to << ":" << msg.port_to << "] "
+                    << msg.message_
+                    << std::endl;
+
+                // Собираем пакет для пересылки
+                Packet forwardPacket = Packet::make(msg.serialize(), PacketType::Message);
+
+                // Ищем получателя
+                std::shared_ptr<ClientSession> target;
+                {
+                    std::lock_guard<std::mutex> lock(server_.sessions_mutex_);
+                    for (auto& s : server_.sessions_) {
+                        if (s->getIP() == msg.ip_to && s->getPort() == msg.port_to) {
+                            target = s;
+                            break;
+                        }
+                    }
+                }
+
+                if (target) {
+                    target->send(forwardPacket);
+                }
+                else {
+                    std::cerr << "Target client not found: "
+                        << msg.ip_to << ":" << msg.port_to << std::endl;
+                }
+            }
+            catch (const std::exception& ex) {
+                std::cerr << "Failed to parse Message: " << ex.what() << std::endl;
+            }
         }
     }
     catch (const std::exception& ex) {
@@ -50,9 +96,9 @@ void ClientSession::handleRecv(OverlappedEx* ov, DWORD bytes)
     postRecv();
 }
 
-void ClientSession::send(const Message& msg)
+void ClientSession::send(const Packet& packet)
 {
-    auto buffer = msg.serialize();
+    auto buffer = packet.serialize();
 
     auto* ov = new OverlappedEx(OperationType::Send);
     memcpy(ov->buffer, buffer.data(), buffer.size());
@@ -74,6 +120,11 @@ std::string ClientSession::getIP() const
 uint16_t ClientSession::getPort() const
 {
     return port_;
+}
+
+std::string ClientSession::getNickName() const
+{
+    return nickname_;
 }
 
 ServerLib::ServerLib(std::string ip, uint16_t port)
@@ -148,27 +199,13 @@ void ServerLib::acceptLoop()
 
         std::cout << "Client [" << ip << ":" << port << "] connected" << std::endl;
 
-        auto session = std::make_shared<ClientSession>(clientSock, ip, port);
+        auto session = std::make_shared<ClientSession>(clientSock, ip, port, *this);
         CreateIoCompletionPort((HANDLE)clientSock, iocp_, (ULONG_PTR)session.get(), 0);
         session->postRecv();
 
         {
             std::lock_guard<std::mutex> lock(sessions_mutex_);
             sessions_.push_back(session);
-        }
-
-        Message joinedMsg = Message::makeMessage(
-            session->getIP() + ":" + std::to_string(session->getPort()),
-            MessageType::UserJoined
-        );
-
-        {
-            std::lock_guard<std::mutex> lock(sessions_mutex_);
-            for (auto& s : sessions_) {
-                if (s.get() != session.get()) {
-                    s->send(joinedMsg);
-                }
-            }
         }
     }
 }

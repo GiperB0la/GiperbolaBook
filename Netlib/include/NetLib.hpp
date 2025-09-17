@@ -11,6 +11,9 @@
 #include <windows.h>
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <mutex>
+#include <queue>
 #include "Protocol.hpp"
 
 #pragma comment(lib, "ws2_32.lib")
@@ -25,24 +28,32 @@ struct Client
 class NET_LIB NetLib
 {
 public:
-    NetLib(const std::string& ip, uint16_t port, const std::string& nickname_);
+    NetLib(const std::string& ip, uint16_t port);
     ~NetLib();
 
 public:
-    bool init();
+    bool init(const std::string& nickname);
     void run();
+    std::string getIP() const;
+    uint16_t getPort() const;
+    std::string getNickName() const;
+    bool sendMessage(const Packet& packet);
+    std::mutex& getMutexEvents();
+    std::queue<Packet>& getEvents();
 
 private:
     bool connectToServer();
     bool isReadyToWrite(int timeoutMs = 1000);
     bool isReadyToRead(int timeoutMs = 1000);
-    bool sendMessage(const std::string& msg);
     void receiveMessage();
+    bool sendNickname();
 
 private:
-    std::string ip_;
-    uint16_t port_;
+    std::string ip_server_, ip_;
+    uint16_t port_server_, port_;
     SOCKET sock_;
     std::string nickname_;
     std::vector<Client> clients_;
+    std::mutex events_mtx_;
+    std::queue<Packet> events_;
 };

@@ -1,8 +1,8 @@
 #include "../include/NetLib.hpp"
 
 
-NetLib::NetLib(const std::string& ip, uint16_t port, const std::string& nickname_)
-    : ip_(ip), port_(port), sock_(INVALID_SOCKET), nickname_(nickname_) {
+NetLib::NetLib(const std::string& ip_server, uint16_t port_server)
+    : ip_server_(ip_server), port_server_(port_server), sock_(INVALID_SOCKET) {
 }
 
 NetLib::~NetLib()
@@ -13,8 +13,10 @@ NetLib::~NetLib()
     WSACleanup();
 }
 
-bool NetLib::init()
+bool NetLib::init(const std::string& nickname)
 {
+    nickname_ = nickname;
+
     if (!connectToServer()) return false;
 
     if (!isReadyToWrite()) {
@@ -53,8 +55,8 @@ bool NetLib::connectToServer()
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(port_);
-    inet_pton(AF_INET, ip_.c_str(), &addr.sin_addr);
+    addr.sin_port = htons(port_server_);
+    inet_pton(AF_INET, ip_server_.c_str(), &addr.sin_addr);
 
     int res = connect(sock_, (sockaddr*)&addr, sizeof(addr));
     if (res == SOCKET_ERROR) {
@@ -73,14 +75,21 @@ bool NetLib::connectToServer()
         return false;
     }
 
-    Message msg;
-    msg.length = static_cast<uint32_t>(nickname_.size());
-    msg.type = MessageType::SetNickname;
-    msg.payload.assign(nickname_.begin(), nickname_.end());
+    sockaddr_in localAddr{};
+    int addrLen = sizeof(localAddr);
+    if (getsockname(sock_, reinterpret_cast<sockaddr*>(&localAddr), &addrLen) == 0) {
+        char ipStr[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &localAddr.sin_addr, ipStr, sizeof(ipStr));
+        ip_ = ipStr;
+        port_ = ntohs(localAddr.sin_port);
 
-    auto buffer = msg.serialize();
-    if (!sendMessage(std::string(buffer.begin(), buffer.end()))) {
-        std::cerr << "Failed to send nickname" << std::endl;
+        std::cout << "Local client address: " << ip_ << ":" << port_ << std::endl;
+    }
+    else {
+        std::cerr << "getsockname() failed with error " << WSAGetLastError() << std::endl;
+    }
+
+    if (!sendNickname()) {
         return false;
     }
 
@@ -115,11 +124,13 @@ bool NetLib::isReadyToRead(int timeoutMs)
     return (res > 0 && FD_ISSET(sock_, &readSet));
 }
 
-bool NetLib::sendMessage(const std::string& msg)
+bool NetLib::sendMessage(const Packet& packet)
 {
     if (!isReadyToWrite()) return false;
 
-    int res = send(sock_, msg.c_str(), (int)msg.size(), 0);
+    auto buffer = packet.serialize();
+    std::string send_buffer = std::string(buffer.begin(), buffer.end());
+    int res = send(sock_, send_buffer.c_str(), (int)send_buffer.size(), 0);
     if (res == SOCKET_ERROR) {
         std::cerr << "send() failed: " << WSAGetLastError() << std::endl;
         return false;
@@ -135,35 +146,100 @@ void NetLib::receiveMessage()
     int res = recv(sock_, buffer, sizeof(buffer), 0);
     if (res > 0) {
         try {
-            Message msg = Message::deserialize(buffer, res);
+            Packet packet = Packet::deserialize(buffer, res);
 
-            switch (msg.type) {
-            case MessageType::UserJoined: {
-                std::string data = msg.asString();
-                Client c;
-                c.ip_ = data.substr(0, data.find(':'));
-                c.port_ = static_cast<uint16_t>(std::stoi(data.substr(data.find(':') + 1)));
-                c.nickname_ = "";
-                clients_.push_back(c);
-                std::cout << ">>> User joined: " << data << std::endl;
-                break;
+            if (packet.type_ == PacketType::CurrentUsers) {
+                std::string data = packet.asString();
+                std::istringstream iss(data);
+                std::string line;
+
+                while (std::getline(iss, line)) {
+                    if (line.empty()) continue;
+
+                    size_t p1 = line.find(':');
+                    size_t p2 = line.find(':', p1 + 1);
+
+                    if (p1 == std::string::npos || p2 == std::string::npos) {
+                        std::cerr << "Bad CurrentUsers format: " << line << std::endl;
+                        continue;
+                    }
+
+                    Client c;
+                    c.ip_ = line.substr(0, p1);
+                    c.port_ = static_cast<uint16_t>(std::stoi(line.substr(p1 + 1, p2 - (p1 + 1))));
+                    c.nickname_ = line.substr(p2 + 1);
+
+                    clients_.push_back(c);
+
+                    std::cout << ">>> Current user: " << c.ip_ << ":" << c.port_ << " (" << c.nickname_ << ")" << std::endl;
+                }
+
+                {
+                    std::lock_guard<std::mutex> lock(events_mtx_);
+                    events_.push(packet);
+                }
             }
-            case MessageType::UserLeft: {
-                std::string data = msg.asString();
+
+            else if (packet.type_ == PacketType::UserJoined) {
+                std::string data = packet.asString();
+
+                size_t p1 = data.find(':');
+                size_t p2 = data.find(':', p1 + 1);
+
+                if (p1 == std::string::npos || p2 == std::string::npos) {
+                    std::cerr << "Bad UserJoined format: " << data << std::endl;
+                    return;
+                }
+
+                Client c;
+                c.ip_ = data.substr(0, p1);
+                c.port_ = static_cast<uint16_t>(std::stoi(data.substr(p1 + 1, p2 - (p1 + 1))));
+                c.nickname_ = data.substr(p2 + 1);
+
+                clients_.push_back(c);
+
+                {
+                    std::lock_guard<std::mutex> lock(events_mtx_);
+                    events_.push(packet);
+                }
+
+                std::cout << ">>> User joined: " << c.ip_ << ":" << c.port_ << " (" << c.nickname_ << ")" << std::endl;
+            }
+
+            else if (packet.type_ == PacketType::UserLeft) {
+                std::string data = packet.asString();
+
+                size_t p1 = data.find(':');
+                size_t p2 = data.find(':', p1 + 1);
+
+                if (p1 == std::string::npos || p2 == std::string::npos) {
+                    std::cerr << "Bad UserLeft format: " << data << std::endl;
+                    return;
+                }
+
+                std::string ip = data.substr(0, p1);
+                uint16_t port = static_cast<uint16_t>(std::stoi(data.substr(p1 + 1, p2 - (p1 + 1))));
+                std::string nick = data.substr(p2 + 1);
+
                 clients_.erase(
                     std::remove_if(clients_.begin(), clients_.end(),
-                        [&](const Client& cl) { return cl.ip_ + ":" + std::to_string(cl.port_) == data; }),
-                    clients_.end());
-                std::cout << ">>> User left: " << data << std::endl;
-                break;
-            }
-            case MessageType::TextMessage:
-                std::cout << msg.asString() << std::endl;
-                break;
+                        [&](const Client& cl) {
+                            return cl.ip_ == ip && cl.port_ == port && cl.nickname_ == nick;
+                        }),
+                    clients_.end()
+                );
 
-            default:
-                std::cerr << "Unknown message type: " << (int)msg.type << std::endl;
-                break;
+                {
+                    std::lock_guard<std::mutex> lock(events_mtx_);
+                    events_.push(packet);
+                }
+
+                std::cout << ">>> User left: " << ip << ":" << port << " (" << nick << ")" << std::endl;
+            }
+
+            else if (packet.type_ == PacketType::Message) {
+                std::lock_guard<std::mutex> lock(events_mtx_);
+                events_.push(packet);
             }
         }
         catch (const std::exception& ex) {
@@ -179,4 +255,41 @@ void NetLib::receiveMessage()
             std::cerr << "recv() failed: " << err << std::endl;
         }
     }
+}
+
+std::string NetLib::getIP() const
+{
+    return ip_;
+}
+
+uint16_t NetLib::getPort() const
+{
+    return port_;
+}
+
+std::string NetLib::getNickName() const
+{
+    return nickname_;
+}
+
+bool NetLib::sendNickname()
+{
+    Packet packet = Packet::make(nickname_, PacketType::SetNickname);
+
+    if (!sendMessage(packet)) {
+        std::cerr << "Failed to send nickname" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+std::mutex& NetLib::getMutexEvents()
+{
+    return events_mtx_;
+}
+
+std::queue<Packet>& NetLib::getEvents()
+{
+    return events_;
 }

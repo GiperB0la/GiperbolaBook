@@ -144,7 +144,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="src\ClientUI.cpp" />
+    <ClCompile Include="src\ChatEntity.cpp" />
+    <ClCompile Include="src\WelcomeWindow.cpp" />
+    <ClCompile Include="src\MainWindow.cpp" />
+    <ClCompile Include="src\GiperbolaBookApp.cpp" />
     <ClCompile Include="src\Widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -153,7 +156,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\ClientUI.hpp" />
+    <ClInclude Include="include\ChatEntity.hpp" />
+    <ClInclude Include="include\MainWindow.hpp" />
+    <ClInclude Include="include\WelcomeWindow.hpp" />
+    <ClInclude Include="include\GiperbolaBookApp.hpp" />
     <ClInclude Include="include\Widgets.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

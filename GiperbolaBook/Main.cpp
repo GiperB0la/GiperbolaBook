@@ -1,28 +1,22 @@
-#include "include/ClientUI.hpp"
-#include <NetLib.hpp>
-#include <iostream>
-#include <thread>
+#include "include/GiperbolaBookApp.hpp"
 
 
-int main()
+int main(int argc, char* argv[])
 {
-    NetLib client("127.0.0.1", 8888, "Egor");
-    if (!client.init()) {
-        std::cerr << "Client init failed" << std::endl;
-        return 1;
+    std::string ip = "127.0.0.1";
+    uint16_t port = 8888;
+
+    if (argc == 2) {
+        try {
+            port = static_cast<uint16_t>(std::stoi(argv[1]));
+        }
+        catch (...) {
+            std::cerr << "Invalid port, using default: " << port << std::endl;
+        }
     }
 
-    ClientUI client_ui;
-    if (!client_ui.init()) {
-        std::cerr << "Client UI init failed" << std::endl;
-        return 1;
-    }
-
-    std::thread thread_net(&NetLib::run, &client);
-
-    client_ui.run();
-
-    thread_net.detach();
+    GiperbolaBookApp app(ip, port);
+    app.run();
 
     return 0;
 }

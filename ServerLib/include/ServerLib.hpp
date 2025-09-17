@@ -16,6 +16,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <sstream>
 #include "Protocol.hpp"
 
 #pragma comment(lib, "ws2_32.lib")
@@ -43,28 +44,32 @@ struct OverlappedEx
     }
 };
 
+class ServerLib;
 class SERVER_LIB ClientSession
 {
 public:
-    explicit ClientSession(SOCKET socket, const std::string& ip, uint16_t port);
+    explicit ClientSession(SOCKET socket, const std::string& ip, uint16_t port, ServerLib& server);
 
 public:
     SOCKET getSocket() const;
     void postRecv();
     void handleRecv(OverlappedEx* ov, DWORD bytes);
-    void send(const Message& msg);
+    void send(const Packet& packet);
     std::string getIP() const;
     uint16_t getPort() const;
+    std::string getNickName() const;
 
 private:
     std::string ip_;
     uint16_t port_;
     SOCKET socket_;
-    std::string nickname_;
+    std::string nickname_ = "";
+    ServerLib& server_;
 };
 
 class SERVER_LIB ServerLib
 {
+    friend ClientSession;
 public:
     ServerLib(std::string ip, uint16_t port);
 
