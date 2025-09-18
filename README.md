@@ -17,6 +17,6 @@ It combines a high-performance networking backend with a custom-designed graphic
 
 ### 🖼️ Screenshot
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/GiperB0la/GiperbolaBook/blob/main/Screen.png">
-  <img alt="Screen" src="https://github.com/GiperB0la/GiperbolaBook/blob/main/Screen.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/GiperB0la/GiperbolaBook/blob/main/Screen.jpg">
+  <img alt="Screen" src="https://github.com/GiperB0la/GiperbolaBook/blob/main/Screen.jpg">
 </picture>
