@@ -92,7 +92,7 @@ class SERVER_LIB ServerLib
 {
     friend ClientSession;
 public:
-    ServerLib(std::string ip, uint16_t port);
+    ServerLib(uint16_t port);
 
 public:
     void shutdown();

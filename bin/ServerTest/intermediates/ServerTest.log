@@ -1,2 +1,51 @@
-﻿  ServerTest.vcxproj -> D:\Cpp\Projects\GiperbolaBook\bin\ServerTest\Release\ServerTest.exe
-  ╤ъюяшЁютрэю Їрщыют: 0.
+﻿  ServerTest.cpp
+D:\Cpp\Projects\GiperbolaBook\ServerLib\include\ServerLib.hpp(84,17): warning C4251: 'ClientSession::ip_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'ClientSession'
+  (compiling source file 'ServerTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+D:\Cpp\Projects\GiperbolaBook\ServerLib\include\ServerLib.hpp(87,17): warning C4251: 'ClientSession::nickname_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'ClientSession'
+  (compiling source file 'ServerTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+D:\Cpp\Projects\GiperbolaBook\ServerLib\include\ServerLib.hpp(109,23): warning C4251: 'ServerLib::running_': 'std::atomic<bool>' needs to have dll-interface to be used by clients of 'ServerLib'
+  (compiling source file 'ServerTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
+      see declaration of 'std::atomic<bool>'
+  
+D:\Cpp\Projects\GiperbolaBook\ServerLib\include\ServerLib.hpp(110,17): warning C4251: 'ServerLib::ip_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'ServerLib'
+  (compiling source file 'ServerTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+D:\Cpp\Projects\GiperbolaBook\ServerLib\include\ServerLib.hpp(114,30): warning C4251: 'ServerLib::workers_': 'std::vector<std::thread,std::allocator<std::thread>>' needs to have dll-interface to be used by clients of 'ServerLib'
+  (compiling source file 'ServerTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
+      see declaration of 'std::vector<std::thread,std::allocator<std::thread>>'
+  
+D:\Cpp\Projects\GiperbolaBook\ServerLib\include\ServerLib.hpp(115,17): warning C4251: 'ServerLib::accept_thread_': 'std::thread' needs to have dll-interface to be used by clients of 'ServerLib'
+  (compiling source file 'ServerTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(42,19):
+      see declaration of 'std::thread'
+  
+D:\Cpp\Projects\GiperbolaBook\ServerLib\include\ServerLib.hpp(116,49): warning C4251: 'ServerLib::sessions_': 'std::vector<std::shared_ptr<ClientSession>,std::allocator<std::shared_ptr<ClientSession>>>' needs to have dll-interface to be used by clients of 'ServerLib'
+  (compiling source file 'ServerTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
+      see declaration of 'std::vector<std::shared_ptr<ClientSession>,std::allocator<std::shared_ptr<ClientSession>>>'
+  
+D:\Cpp\Projects\GiperbolaBook\ServerLib\include\ServerLib.hpp(117,16): warning C4251: 'ServerLib::sessions_mutex_': 'std::mutex' needs to have dll-interface to be used by clients of 'ServerLib'
+  (compiling source file 'ServerTest.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\mutex(98,19):
+      see declaration of 'std::mutex'
+  
+  Generating code
+  2 of 259 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    15 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  ServerTest.vcxproj -> D:\Cpp\Projects\GiperbolaBook\bin\ServerTest\Release\ServerTest.exe
+  "pwsh.exe" не является внутренней или внешней
+  командой, исполняемой программой или пакетным файлом.
+  D:\Cpp\Projects\GiperbolaBook\bin\ServerLib\Release\ServerLib.dll
+  ╤ъюяшЁютрэю Їрщыют: 1.

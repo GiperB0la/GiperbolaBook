@@ -147,8 +147,8 @@ std::string ClientSession::getNickName() const
     return nickname_;
 }
 
-ServerLib::ServerLib(std::string ip, uint16_t port)
-    : ip_(ip), port_(port) {
+ServerLib::ServerLib(uint16_t port)
+    : port_(port) {
 }
 
 void ServerLib::shutdown()
@@ -171,7 +171,7 @@ bool ServerLib::init()
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
-    inet_pton(AF_INET, ip_.c_str(), &addr.sin_addr);
+    addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(port_);
 
     if (bind(listen_sock_, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) return false;
@@ -196,8 +196,7 @@ void ServerLib::run()
 {
     std::cout
         << Color::CYAN << "[INFO] "
-        << Color::RESET << "Server running on "
-        << Color::BRIGHT_GREEN << ip_ << ":" << port_
+        << Color::RESET << "The server is running"
         << Color::RESET << std::endl;
 
     accept_thread_.join();

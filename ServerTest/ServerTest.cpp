@@ -53,7 +53,7 @@ private:
 
 TEST(ServerLibTest, EchoMessage) 
 {
-    ServerLib server("127.0.0.1", 5555);
+    ServerLib server(5555);
     ASSERT_TRUE(server.init());
 
     std::thread serverThread([&]() {
