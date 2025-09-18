@@ -1,8 +1,8 @@
 ﻿#include "../include/NetLib.hpp"
 
 
-NetLib::NetLib(const std::string& ip_server, uint16_t port_server, uint16_t local_port)
-    : ip_server_(ip_server), port_server_(port_server), local_port_(local_port), sock_(INVALID_SOCKET) {
+NetLib::NetLib(const std::string& ip_server, uint16_t port_server)
+    : ip_server_(ip_server), port_server_(port_server), sock_(INVALID_SOCKET) {
 }
 
 NetLib::~NetLib()
@@ -23,7 +23,8 @@ bool NetLib::init(const std::string& nickname)
         return false;
     }
 
-    return connectToServer();
+    sock_ = INVALID_SOCKET;
+    return true;
 }
 
 void NetLib::run()
@@ -57,21 +58,6 @@ bool NetLib::connectToServer()
 
     u_long mode = 1;
     ioctlsocket(sock_, FIONBIO, &mode);
-
-    sockaddr_in localAddr{};
-    localAddr.sin_family = AF_INET;
-    localAddr.sin_addr.s_addr = INADDR_ANY;
-    localAddr.sin_port = htons(local_port_);
-
-    int opt = 1;
-    setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR, (char*)&opt, sizeof(opt));
-
-    if (bind(sock_, (sockaddr*)&localAddr, sizeof(localAddr)) == SOCKET_ERROR) {
-        std::cerr << "bind() failed with error " << WSAGetLastError() << std::endl;
-        closesocket(sock_);
-        sock_ = INVALID_SOCKET;
-        return false;
-    }
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
@@ -107,9 +93,6 @@ bool NetLib::connectToServer()
         port_ = ntohs(boundAddr.sin_port);
 
         std::cout << "Local client address: " << ip_ << ":" << port_ << std::endl;
-    }
-    else {
-        std::cerr << "getsockname() failed with error " << WSAGetLastError() << std::endl;
     }
 
     if (!sendNickname()) {

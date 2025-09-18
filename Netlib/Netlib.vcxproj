@@ -81,12 +81,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\NetLib\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\NetLib\intermediates\</IntDir>
-    <PublicIncludeDirectories>C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>D:\Cpp\Projects\GiperbolaBook\Netlib\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\NetLib\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\NetLib\intermediates\</IntDir>
-    <PublicIncludeDirectories>C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>D:\Cpp\Projects\GiperbolaBook\Netlib\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

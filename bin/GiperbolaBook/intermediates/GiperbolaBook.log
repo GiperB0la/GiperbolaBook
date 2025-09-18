@@ -1,17 +1,2 @@
-﻿  MainWindow.cpp
-C:\Users\Egorc\Desktop\GiperbolaBook\GiperbolaBook\include\Widgets.hpp(177,33): warning C4305: 'initializing': truncation from 'double' to 'const float'
-  (compiling source file 'src/MainWindow.cpp')
-  
-  WelcomeWindow.cpp
-C:\Users\Egorc\Desktop\GiperbolaBook\GiperbolaBook\include\Widgets.hpp(177,33): warning C4305: 'initializing': truncation from 'double' to 'const float'
-  (compiling source file 'src/WelcomeWindow.cpp')
-  
-  Generating code
-  2 of 1073 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  GiperbolaBook.vcxproj -> C:\Users\Egorc\Desktop\GiperbolaBook\bin\GiperbolaBook\Release\GiperbolaBook.exe
-  "pwsh.exe" не является внутренней или внешней
-  командой, исполняемой программой или пакетным файлом.
+﻿  GiperbolaBook.vcxproj -> D:\Cpp\Projects\GiperbolaBook\bin\GiperbolaBook\Release\GiperbolaBook.exe
   ╤ъюяшЁютрэю Їрщыют: 0.

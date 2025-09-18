@@ -5,7 +5,6 @@
 //{
 //    std::string ip_server = "127.0.0.1";
 //    uint16_t port_server = 8888;
-//    uint16_t local_port = 8484;
 //
 //    if (argc >= 2) {
 //        ip_server = argv[1];
@@ -20,16 +19,7 @@
 //        }
 //    }
 //
-//    if (argc >= 4) {
-//        try {
-//            local_port = static_cast<uint16_t>(std::stoi(argv[3]));
-//        }
-//        catch (...) {
-//            std::cerr << "Invalid local port, using default: " << local_port << std::endl;
-//        }
-//    }
-//
-//    GiperbolaBookApp app(ip_server, port_server, local_port);
+//    GiperbolaBookApp app(ip_server, port_server);
 //    app.run();
 //
 //    return 0;
@@ -51,7 +41,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     std::string ip_server = "127.0.0.1";
     uint16_t port_server = 8888;
-    uint16_t local_port = 8484;
 
     if (argc >= 2) {
         ip_server = argv[1];
@@ -66,16 +55,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
     }
 
-    if (argc >= 4) {
-        try {
-            local_port = static_cast<uint16_t>(std::stoi(argv[3]));
-        }
-        catch (...) {
-            MessageBoxA(nullptr, "Invalid local port, using default", "Warning", MB_OK | MB_ICONWARNING);
-        }
-    }
-
-    GiperbolaBookApp app(ip_server, port_server, local_port);
+    GiperbolaBookApp app(ip_server, port_server);
     app.run();
 
     return 0;

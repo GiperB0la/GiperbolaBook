@@ -29,7 +29,7 @@ class NET_LIB NetLib
 {
 public:
     friend class NetLibTest_EchoServerInteraction_Test;
-    NetLib(const std::string& ip, uint16_t port, uint16_t local_port);
+    NetLib(const std::string& ip, uint16_t port);
     ~NetLib();
 
 public:
@@ -53,7 +53,7 @@ private:
 
 private:
     std::string ip_server_, ip_;
-    uint16_t port_server_, port_, local_port_;
+    uint16_t port_server_, port_;
     SOCKET sock_;
     std::string nickname_;
     std::vector<Client> clients_;

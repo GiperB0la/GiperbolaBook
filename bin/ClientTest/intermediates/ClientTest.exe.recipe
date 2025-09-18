@@ -2,10 +2,10 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\Egorc\Desktop\GiperbolaBook\bin\NetLib\Release\NetLib.dll</FullPath>
+      <FullPath>D:\Cpp\Projects\GiperbolaBook\bin\NetLib\Release\NetLib.dll</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>C:\Users\Egorc\Desktop\GiperbolaBook\bin\ClientTest\Release\ClientTest.exe</FullPath>
+      <FullPath>D:\Cpp\Projects\GiperbolaBook\bin\ClientTest\Release\ClientTest.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

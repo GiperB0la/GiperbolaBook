@@ -80,12 +80,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\ServerLib\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\ServerLib\intermediates\</IntDir>
-    <PublicIncludeDirectories>C:\Users\Egorc\Desktop\GiperbolaBook\ServerLib\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>D:\Cpp\Projects\GiperbolaBook\ServerLib\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\ServerLib\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\ServerLib\intermediates\</IntDir>
-    <PublicIncludeDirectories>C:\Users\Egorc\Desktop\GiperbolaBook\ServerLib\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>D:\Cpp\Projects\GiperbolaBook\ServerLib\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
