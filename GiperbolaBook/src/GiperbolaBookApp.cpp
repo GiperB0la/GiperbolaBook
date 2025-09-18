@@ -1,9 +1,9 @@
 #include "../include/GiperbolaBookApp.hpp"
 
 
-GiperbolaBookApp::GiperbolaBookApp(const std::string& ip, uint16_t port)
-    : ip_(ip), port_(port), 
-    net_(std::make_shared<NetLib>(ip, port)) {
+GiperbolaBookApp::GiperbolaBookApp(const std::string& ip, uint16_t port, uint16_t local_port)
+    : ip_(ip), port_(port), local_port_(local_port),
+    net_(std::make_shared<NetLib>(ip, port, local_port)) {
 }
 
 void GiperbolaBookApp::run()
@@ -34,5 +34,5 @@ void GiperbolaBookApp::run()
 
     main_window_.run();
 
-    thread_net.join();
+    thread_net.detach();
 }

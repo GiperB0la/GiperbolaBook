@@ -35,7 +35,7 @@ bool WelcomeWindow::init()
 
     font_.loadFromFile(main_path_ + "/Graphics/Fonts/Inter/Inter-Regular.otf");
 
-    input_field_ = std::make_unique<InputField>(sf::Vector2f(17.f, 257.f), sf::Vector2f(317.f, 24.f),
+    input_field_ = std::make_unique<InputField>(sf::Vector2f(16.f, 257.f), sf::Vector2f(318.f, 34.f),
         font_, 20, sf::Color(49, 51, 56), "Write your name...");
 
     send_ = std::make_unique<Button>(0,

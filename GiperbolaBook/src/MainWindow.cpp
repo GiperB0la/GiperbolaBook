@@ -248,7 +248,7 @@ void MainWindow::sendMessage()
 
     Packet packet = Packet::make(message.serialize(), PacketType::Message);
 
-    if (!net_->sendMessage(packet)) {
+    if (!net_->sendPacket(packet)) {
         std::cerr << "Failed to send message" << std::endl;
     }
 
@@ -275,17 +275,20 @@ void MainWindow::handlePacket(const Packet& packet)
 
             std::string ip = line.substr(0, p1);
             uint16_t port = static_cast<uint16_t>(std::stoi(line.substr(p1 + 1, p2 - (p1 + 1))));
+            std::string nick = line.substr(p2 + 1);
 
             bool is_self = (net_->getIP() == ip && net_->getPort() == port);
 
-            chats_.emplace_back(std::make_shared<ChatEntity>(
-                ip,
-                port,
-                line.substr(p2 + 1),
-                main_path_, 
-                font_,
-                is_self
-            ));
+            auto it = std::find_if(chats_.begin(), chats_.end(),
+                [&](const std::shared_ptr<ChatEntity>& chat) {
+                    return chat->getIP() == ip && chat->getPort() == port;
+                });
+
+            if (it == chats_.end()) {
+                chats_.emplace_back(std::make_shared<ChatEntity>(
+                    ip, port, nick, main_path_, font_, is_self
+                ));
+            }
         }
     }
 
@@ -300,9 +303,20 @@ void MainWindow::handlePacket(const Packet& packet)
             return;
         }
 
-        chats_.emplace_back(std::make_shared<ChatEntity>(
-            data.substr(0, p1), static_cast<uint16_t>(std::stoi(data.substr(p1 + 1, p2 - (p1 + 1)))), data.substr(p2 + 1), main_path_, font_
-        ));
+        std::string ip = data.substr(0, p1);
+        uint16_t port = static_cast<uint16_t>(std::stoi(data.substr(p1 + 1, p2 - (p1 + 1))));
+        std::string nick = data.substr(p2 + 1);
+
+        auto it = std::find_if(chats_.begin(), chats_.end(),
+            [&](const std::shared_ptr<ChatEntity>& chat) {
+                return chat->getIP() == ip && chat->getPort() == port;
+            });
+
+        if (it == chats_.end()) {
+            chats_.emplace_back(std::make_shared<ChatEntity>(
+                ip, port, nick, main_path_, font_
+            ));
+        }
     }
 
     else if (packet.type_ == PacketType::UserLeft) {
@@ -316,10 +330,13 @@ void MainWindow::handlePacket(const Packet& packet)
             return;
         }
 
+        std::string ip = data.substr(0, p1);
+        uint16_t port = static_cast<uint16_t>(std::stoi(data.substr(p1 + 1, p2 - (p1 + 1))));
+
         chats_.erase(
             std::remove_if(chats_.begin(), chats_.end(),
                 [&](const std::shared_ptr<ChatEntity>& chat) {
-                    return chat->getIP() == data.substr(0, p1) && chat->getPort() == static_cast<uint16_t>(std::stoi(data.substr(p1 + 1, p2 - (p1 + 1))));
+                    return chat->getIP() == ip && chat->getPort() == port;
                 }),
             chats_.end()
         );

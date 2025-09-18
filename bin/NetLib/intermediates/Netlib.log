@@ -1,39 +1,38 @@
 ﻿  NetLib.cpp
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(52,17): warning C4251: 'NetLib::ip_server_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(55,17): warning C4251: 'NetLib::ip_server_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
   (compiling source file 'src/NetLib.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(52,29): warning C4251: 'NetLib::ip_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(55,29): warning C4251: 'NetLib::ip_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
   (compiling source file 'src/NetLib.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(55,17): warning C4251: 'NetLib::nickname_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(58,17): warning C4251: 'NetLib::nickname_': 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of 'NetLib'
   (compiling source file 'src/NetLib.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(56,25): warning C4251: 'NetLib::clients_': 'std::vector<Client,std::allocator<Client>>' needs to have dll-interface to be used by clients of 'NetLib'
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(59,25): warning C4251: 'NetLib::clients_': 'std::vector<Client,std::allocator<Client>>' needs to have dll-interface to be used by clients of 'NetLib'
   (compiling source file 'src/NetLib.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       see declaration of 'std::vector<Client,std::allocator<Client>>'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(57,16): warning C4251: 'NetLib::events_mtx_': 'std::mutex' needs to have dll-interface to be used by clients of 'NetLib'
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(60,16): warning C4251: 'NetLib::events_mtx_': 'std::mutex' needs to have dll-interface to be used by clients of 'NetLib'
   (compiling source file 'src/NetLib.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\mutex(98,19):
       see declaration of 'std::mutex'
   
-C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(58,24): warning C4251: 'NetLib::events_': 'std::queue<Packet,std::deque<Packet,std::allocator<Packet>>>' needs to have dll-interface to be used by clients of 'NetLib'
+C:\Users\Egorc\Desktop\GiperbolaBook\Netlib\include\NetLib.hpp(61,24): warning C4251: 'NetLib::events_': 'std::queue<Packet,std::deque<Packet,std::allocator<Packet>>>' needs to have dll-interface to be used by clients of 'NetLib'
   (compiling source file 'src/NetLib.cpp')
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\queue(34,7):
       see declaration of 'std::queue<Packet,std::deque<Packet,std::allocator<Packet>>>'
   
      Creating library C:\Users\Egorc\Desktop\GiperbolaBook\bin\NetLib\Release\NetLib.lib and object C:\Users\Egorc\Desktop\GiperbolaBook\bin\NetLib\Release\NetLib.exp
   Generating code
-  1 of 481 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  All 516 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   Netlib.vcxproj -> C:\Users\Egorc\Desktop\GiperbolaBook\bin\NetLib\Release\NetLib.dll
   "pwsh.exe" не является внутренней или внешней

@@ -7,13 +7,11 @@
 
 enum class PacketType : uint8_t
 {
-    Message = 0x01, // обычное сообщение
-    SetNickname = 0x02, // клиент сообщает свой ник
-    CurrentUsers = 0x03, // все клиенты
-    UserJoined = 0x04, // сервер уведомляет: кто-то вошёл
-    UserLeft = 0x05, // сервер уведомляет: кто-то вышел
-    Ping = 0x06, // пинг
-    Pong = 0x07  // понг
+    Message = 0x01,
+    SetNickname = 0x02,
+    CurrentUsers = 0x03,
+    UserJoined = 0x04,
+    UserLeft = 0x05
 };
 
 struct Packet

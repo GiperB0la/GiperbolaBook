@@ -16,7 +16,7 @@ void ClientSession::postRecv()
     DWORD flags = 0, bytes = 0;
     int res = WSARecv(socket_, &ov->wsaBuf, 1, &bytes, &flags, &ov->overlapped, nullptr);
     if (res == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "WSARecv error" << std::endl;
+        std::cerr << Color::BRIGHT_RED << "WSARecv error" << Color::RESET << std::endl;
         delete ov;
     }
 }
@@ -28,7 +28,14 @@ void ClientSession::handleRecv(OverlappedEx* ov, DWORD bytes)
 
         if (packet.type_ == PacketType::SetNickname) {
             nickname_ = packet.asString();
-            std::cout << "Client [" << ip_ << ":" << port_ << "] set nickname: " << nickname_ << std::endl;
+            std::cout
+                << Color::CYAN << "[INFO] "
+                << Color::RESET << "Client ["
+                << Color::YELLOW << ip_ << ":" << port_
+                << Color::RESET << "] set nickname: "
+                << Color::BRIGHT_GREEN << nickname_
+                << Color::RESET << std::endl;
+
             {
                 std::lock_guard<std::mutex> lock(server_.sessions_mutex_);
                 std::ostringstream oss;
@@ -55,15 +62,17 @@ void ClientSession::handleRecv(OverlappedEx* ov, DWORD bytes)
                 Message msg = Message::deserialize(packet.payload_.data(), packet.payload_.size());
 
                 std::cout
+                    << Color::BRIGHT_MAGENTA
                     << "[" << msg.ip_from << ":" << msg.port_from << "] "
-                    << " -> [" << msg.ip_to << ":" << msg.port_to << "] "
-                    << msg.message_
-                    << std::endl;
+                    << Color::RESET << Color::BOLD << " -> " << Color::RESET
+                    << Color::BRIGHT_CYAN
+                    << "[" << msg.ip_to << ":" << msg.port_to << "] "
+                    << Color::RESET << " "
+                    << Color::WHITE << msg.message_
+                    << Color::RESET << std::endl;
 
-                // Собираем пакет для пересылки
                 Packet forwardPacket = Packet::make(msg.serialize(), PacketType::Message);
 
-                // Ищем получателя
                 std::shared_ptr<ClientSession> target;
                 {
                     std::lock_guard<std::mutex> lock(server_.sessions_mutex_);
@@ -79,17 +88,28 @@ void ClientSession::handleRecv(OverlappedEx* ov, DWORD bytes)
                     target->send(forwardPacket);
                 }
                 else {
-                    std::cerr << "Target client not found: "
-                        << msg.ip_to << ":" << msg.port_to << std::endl;
+                    std::cerr
+                        << Color::RED << "[ERROR] "
+                        << Color::RESET << "Target client not found: "
+                        << Color::YELLOW << msg.ip_to << ":" << msg.port_to
+                        << Color::RESET << std::endl;
                 }
             }
             catch (const std::exception& ex) {
-                std::cerr << "Failed to parse Message: " << ex.what() << std::endl;
+                std::cerr
+                    << Color::RED << "[ERROR] "
+                    << Color::RESET << "Failed to parse Message: "
+                    << Color::YELLOW << ex.what()
+                    << Color::RESET << std::endl;
             }
         }
     }
     catch (const std::exception& ex) {
-        std::cerr << "Failed to parse message: " << ex.what() << std::endl;
+        std::cerr
+            << Color::RED << "[ERROR] "
+            << Color::RESET << "Failed to parse message: "
+            << Color::YELLOW << ex.what()
+            << Color::RESET << std::endl;
     }
 
     delete ov;
@@ -107,7 +127,7 @@ void ClientSession::send(const Packet& packet)
     DWORD bytes = 0;
     int res = WSASend(socket_, &ov->wsaBuf, 1, &bytes, 0, &ov->overlapped, nullptr);
     if (res == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "WSASend error" << std::endl;
+        std::cerr << Color::BRIGHT_RED << "WSASend error" << Color::RESET << std::endl;
         delete ov;
     }
 }
@@ -174,7 +194,12 @@ bool ServerLib::init()
 
 void ServerLib::run()
 {
-    std::cout << "Server running on " << ip_ << ":" << port_ << std::endl;
+    std::cout
+        << Color::CYAN << "[INFO] "
+        << Color::RESET << "Server running on "
+        << Color::BRIGHT_GREEN << ip_ << ":" << port_
+        << Color::RESET << std::endl;
+
     accept_thread_.join();
     for (auto& t : workers_) {
         t.join();
@@ -197,7 +222,12 @@ void ServerLib::acceptLoop()
         inet_ntop(AF_INET, &clientAddr.sin_addr, ip, sizeof(ip));
         uint16_t port = ntohs(clientAddr.sin_port);
 
-        std::cout << "Client [" << ip << ":" << port << "] connected" << std::endl;
+        std::cout
+            << Color::CYAN << "[INFO] "
+            << Color::RESET << "Client ["
+            << Color::YELLOW << ip << ":" << port
+            << Color::RESET << "] connected"
+            << std::endl;
 
         auto session = std::make_shared<ClientSession>(clientSock, ip, port, *this);
         CreateIoCompletionPort((HANDLE)clientSock, iocp_, (ULONG_PTR)session.get(), 0);
@@ -228,7 +258,12 @@ void ServerLib::workerLoop()
 
         if (!res || bytes == 0) {
             if (session) {
-                std::cerr << "Client [" << session->getIP() << ":" << session->getPort() << "] disconnect" << std::endl;
+                std::cerr
+                    << Color::RED << "[DISCONNECT] "
+                    << Color::RESET << "Client ["
+                    << Color::YELLOW << session->getIP() << ":" << session->getPort()
+                    << Color::RESET << "] disconnected"
+                    << std::endl;
                 closesocket(session->getSocket());
             }
             if (ov) delete ov;

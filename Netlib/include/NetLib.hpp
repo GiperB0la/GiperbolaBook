@@ -28,7 +28,8 @@ struct Client
 class NET_LIB NetLib
 {
 public:
-    NetLib(const std::string& ip, uint16_t port);
+    friend class NetLibTest_EchoServerInteraction_Test;
+    NetLib(const std::string& ip, uint16_t port, uint16_t local_port);
     ~NetLib();
 
 public:
@@ -37,20 +38,22 @@ public:
     std::string getIP() const;
     uint16_t getPort() const;
     std::string getNickName() const;
-    bool sendMessage(const Packet& packet);
+    bool sendPacket(const Packet& packet);
     std::mutex& getMutexEvents();
     std::queue<Packet>& getEvents();
+    SOCKET getSocket() const;
 
 private:
     bool connectToServer();
     bool isReadyToWrite(int timeoutMs = 1000);
     bool isReadyToRead(int timeoutMs = 1000);
-    void receiveMessage();
+    bool receivePacket();
+    void handlePacket(const Packet& packet);
     bool sendNickname();
 
 private:
     std::string ip_server_, ip_;
-    uint16_t port_server_, port_;
+    uint16_t port_server_, port_, local_port_;
     SOCKET sock_;
     std::string nickname_;
     std::vector<Client> clients_;

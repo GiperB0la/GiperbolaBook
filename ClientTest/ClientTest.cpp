@@ -3,8 +3,7 @@
 #include <thread>
 #include <chrono>
 
-
-void startEchoServer(uint16_t port) 
+void startEchoServer(uint16_t port)
 {
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -24,8 +23,17 @@ void startEchoServer(uint16_t port)
     char buffer[1024];
     int r = recv(clientSock, buffer, sizeof(buffer), 0);
     if (r > 0) {
-        std::string reply = std::string("Echo: ") + std::string(buffer, r);
-        send(clientSock, reply.c_str(), (int)reply.size(), 0);
+        try {
+            Packet p = Packet::deserialize(buffer, r);
+            std::string data = p.asString();
+
+            Packet reply = Packet::make("Echo: " + data, PacketType::Message);
+            auto buf = reply.serialize();
+            send(clientSock, buf.data(), (int)buf.size(), 0);
+        }
+        catch (const std::exception& ex) {
+            std::cerr << "Server failed to parse Packet: " << ex.what() << std::endl;
+        }
     }
 
     closesocket(clientSock);
@@ -33,27 +41,32 @@ void startEchoServer(uint16_t port)
     WSACleanup();
 }
 
-TEST(NetLibTest, EchoServerInteraction) 
+TEST(NetLibTest, EchoServerInteraction)
 {
     constexpr uint16_t testPort = 7777;
 
     std::thread serverThread(startEchoServer, testPort);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    NetLib client("127.0.0.1", testPort, "Test");
-    ASSERT_TRUE(client.init());
+    NetLib client("127.0.0.1", testPort, 0);
+    ASSERT_TRUE(client.init("TestUser"));
 
-    /*ASSERT_TRUE(client.isReadyToWrite(1000));
+    Packet testPacket = Packet::make("Hello", PacketType::Message);
+    ASSERT_TRUE(client.sendPacket(testPacket));
 
-    ASSERT_TRUE(client.sendMessage("hello"));
+    ASSERT_TRUE(client.isReadyToRead(2000)) << "Timeout waiting for reply";
 
-    std::string reply = client.receiveMessage();
-    EXPECT_EQ(reply, "Echo: hello");*/
+    char buffer[1024];
+    int res = recv(client.getSocket(), buffer, sizeof(buffer), 0);
+    ASSERT_GT(res, 0) << "recv() failed with error: " << WSAGetLastError();
+
+    Packet reply = Packet::deserialize(buffer, res);
+    EXPECT_EQ(reply.asString(), "Echo: TestUser");
 
     serverThread.join();
 }
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
