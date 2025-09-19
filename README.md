@@ -23,6 +23,15 @@ It combines a high-performance networking backend with a custom-designed graphic
 
 ---
 
+## 🛠️ Build
+
+### 🔹 Prerequisites
+- **CMake ≥ 3.16**  
+- **C++17 compiler** (MSVC, g++, clang++)  
+- **SFML 2.6.2** ([download](https://www.sfml-dev.org/download/sfml/2.6.2/))
+
+---
+
 ```powershell
 # Clone project
 git clone https://github.com/GiperB0la/GiperbolaBook.git
