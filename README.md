@@ -20,3 +20,18 @@ It combines a high-performance networking backend with a custom-designed graphic
   <source media="(prefers-color-scheme: dark)" srcset="https://github.com/GiperB0la/GiperbolaBook/blob/main/Screen.jpg">
   <img alt="Screen" src="https://github.com/GiperB0la/GiperbolaBook/blob/main/Screen.jpg">
 </picture>
+
+---
+
+```powershell
+# Clone project
+git clone https://github.com/GiperB0la/GiperbolaBook.git
+cd GiperbolaBook
+mkdir build && cd build
+
+# Configure
+cmake .. -DSFML_DIR="path/to/SFML/lib/cmake/SFML"
+
+# Build (Release version)
+cmake --build . --config Release
+```
